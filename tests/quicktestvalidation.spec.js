@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 
 test('Verify to create sprint for NLU bot channel', async ({ page }) => {
 
-  test.setTimeout(120000);
+  test.setTimeout(1200000);
   await page.goto('https://pre-prod.dv1jnycq2lzwo.amplifyapp.com/#/login');
   
   await page.waitForSelector('input[type="email"]');
@@ -24,18 +24,29 @@ test('Verify to create sprint for NLU bot channel', async ({ page }) => {
   await page.waitForSelector('span:has-text("Dashboard")');
   await page.locator('span').filter({ hasText: 'Dashboard' }).click();
   
-  await page.waitForSelector('text=Service');
-  await page.getByText('Service', { exact: true }).click();
+  //await page.waitForSelector('text=Service');
+  //await page.getByText('Service', { exact: true }).click();
   
-  await page.waitForSelector('role=link[name="+ Create Service"]');
-  await page.getByRole('link', { name: '+ Create Service' }).click();
+  //await page.waitForSelector('role=link[name="+ Create Service"]');
+  //await page.getByRole('link', { name: '+ Create Service' }).click();
+  await page.goto('https://pre-prod.dv1jnycq2lzwo.amplifyapp.com/#/home/service/create');
+  //await page.waitForSelector('networkidle');
+  //await page.waitForSelector('selector');
+
+  await page.screenshot({path:'tests/screenshorts/'+Date.now()+'service.png'});
   
-  await page.waitForSelector('role=textbox');
+  //await page.waitForSelector('role=textbox');
   await page.getByRole('textbox').click();
 
   const currentTime = await page.evaluate(() => {
     const now = new Date();
-    return now.toISOString();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(2);
+    return hours + minutes + seconds + month + day + year;
   });
 
   await page.getByRole('textbox').fill('service' + currentTime);
@@ -61,24 +72,37 @@ test('Verify to create sprint for NLU bot channel', async ({ page }) => {
   await page.getByRole('button', { name: 'Save' }).click();
   await page.waitForSelector('text=Script');
   await page.getByText('Script', { exact: true }).click();
+  await page.waitForTimeout(10000);
   
-  await page.waitForSelector('role=link[name="+ Create Script"]');
-  await page.getByRole('link', { name: '+ Create Script' }).click();
+  //await page.waitForSelector('role=link[name="+ Create Script"]');
+  //await page.getByRole('link', { name: '+ Create Script' }).click();
+  //await page.waitForLoadState
+  await page.goto('https://pre-prod.dv1jnycq2lzwo.amplifyapp.com/#/home/script/create/id');
+  await page.waitForTimeout(10000);
+  //await page.waitForURL('https://pre-prod.dv1jnycq2lzwo.amplifyapp.com/#/home/script/create');
+  // await page.waitForLoadState();
+  //await page.waitForSelector('role=link[name="+ Create Script"]');
+  //await page.waitForSelector('role=textbox');
+  //await page.getByRole('textbox').click();
+  await page.screenshot({path:'tests/screenshorts/'+Date.now()+'script.png'});
+  //await page.fill('textbox','script' + currentTime);
   
-  await page.waitForSelector('role=textbox');
-  await page.getByRole('textbox').click();
-  
-  await page.getByRole('textbox').fill('script' + currentTime);
-  
+  const inputLocator = page.locator('input[formcontrolname="scriptName"]');
+
+  // Example action: filling the input with some text
+  await inputLocator.fill('script' + currentTime);
+
   await page.waitForSelector('role=button[name="Next"]');
   await page.getByRole('button', { name: 'Next' }).click();
-  
+  await page.waitForLoadState();
   await page.waitForSelector('text=NLU BOT');
   await page.getByText('NLU BOT').click();
   
   await page.getByRole('button', { name: 'Next' }).click();
   await page.waitForTimeout(10000);
+  await page.screenshot({path:'tests/screenshorts/'+Date.now()+'amplify.png'});
   await page.getByRole('button', { name: 'Next' }).click();
+  await page.screenshot({path:'tests/screenshorts/'+Date.now()+'amplify.png'});
   
   //await page.waitForSelector('app-form-input:has-text("Description") role=textbox');
   //await page.locator('app-form-input').filter({ hasText: 'Description' }).getByRole('textbox').click();
@@ -128,11 +152,13 @@ test('Verify to create sprint for NLU bot channel', async ({ page }) => {
   
   await page.waitForSelector('text=testsprint');
   await page.getByText('testsprint').click();
-  
+  await page.screenshot({path:'tests/screenshorts/'+Date.now()+'start.png'});
   await page.waitForSelector('role=button[name="Start"]');
   await page.getByRole('button', { name: 'Start' }).click();
-  
-  await page.waitForTimeout(100000);
 
-  await browser.close();
+  //await page.screenshot({path:'tests/screenshorts/'+Date.now()+'final.png'});
+
+  //await page.getByRole('button', { name: 'Test Again' }).isVisible
+  //await page.waitForTimeout(150000);
+  //await browser.close();
 });
